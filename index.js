@@ -9,11 +9,8 @@ function tablify(options) {
     options = options || {};
     var tableData = options.data || [];
     var header = options.header;
-    var border = isDefined(options.border) ? options.border : 1;
-    var cellspacing = isDefined(options.cellspacing) ? options.cellspacing : 0;
-    var cellpadding = isDefined(options.cellpadding) ? options.cellpadding : 0;
-    var tableId = options.table_id || 'tablify';
-    var tableClass = options.table_class || 'tablify';
+    var idAttribute = options.table_id ? ` id="${options.table_id}" ` : '';
+    var classAttribute = options.table_class ? ` class="${options.table_class}"` : '';
     var header_mapping = options.header_mapping || {};
     var pretty = options.pretty;
     if (pretty === undefined) {
@@ -83,7 +80,7 @@ function tablify(options) {
         indent = '  ';
     }
     if (tableData.length) {
-        htmlTable += '<table id="' + tableId + '" class="' + tableClass + '" border="' + border + '" cellspacing="' + cellspacing + '" cellpadding="' + cellpadding + '">';
+        htmlTable += `<table${idAttribute}${classAttribute}>`;
         for (i = 0; i < cellArray.length; i++) {
             htmlTable += newLine;
             htmlTable += indent;
