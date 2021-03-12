@@ -63,7 +63,6 @@ function tablify(options) {
         });
     });
 
-    var i, j;
     if (isSingleRow && cellArray.length) {
         // Transpose the array to show object as key-value pair instead of table
         cellArray = cellArray[0].map(function(col, i) {
@@ -73,29 +72,28 @@ function tablify(options) {
         });
     }
 
-    var newLine = '';
-    var indent = '';
-    if (pretty) {
-        newLine = '\n';
-        indent = '  ';
-    }
     if (tableData.length) {
         htmlTable += `<table${idAttribute}${classAttribute}>`;
-        for (i = 0; i < cellArray.length; i++) {
-            htmlTable += newLine;
-            htmlTable += indent;
+
+        htmlTable += '<thead>';
             htmlTable += '<tr>';
-            for (j = 0; j < cellArray[i].length; j++) {
-                htmlTable += newLine;
-                htmlTable += indent;
-                htmlTable += indent;
-                htmlTable += cellArray[i][j];
-            }
-            htmlTable += newLine;
-            htmlTable += indent;
+            cellArray[0].forEach(th => {
+                htmlTable += th;
+            });
+            cellArray.shift();
             htmlTable += '</tr>';
-        }
-        htmlTable += newLine;
+        htmlTable += '</thead>';
+
+        htmlTable += '<tbody>';
+            cellArray.forEach(row => {
+                htmlTable += '<tr>';
+                row.forEach(cell => {
+                    htmlTable += cell;
+                });
+                htmlTable += '</tr>';
+            });
+        htmlTable += '</tbody>';
+
         htmlTable += '</table>';
     }
     return htmlTable;
