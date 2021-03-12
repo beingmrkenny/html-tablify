@@ -56,8 +56,8 @@ function tablify(options) {
 		cellArray.push(cellRow);
 		header.forEach(function (key) {
 			let value = json[key];
-			if (value === undefined) {
-				value = '';
+			if (value === undefined || value === null || (Array.isArray(value) && value.length == 0)) {
+				value = ' ';
 			} else if (typeof value !== 'string') {
 				value = JSON.stringify(value);
 			}
