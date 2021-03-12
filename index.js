@@ -1,22 +1,19 @@
 /* jslint node: true */
 'use strict';
 
-function isDefined(x) {
-    return x !== undefined && x !== null;
-}
-
 function tablify(options) {
+
     options = options || {};
-    var tableData = options.data || [];
-    var header = options.header;
-    var idAttribute = options.table_id ? ` id="${options.table_id}" ` : '';
-    var classAttribute = options.table_class ? ` class="${options.table_class}"` : '';
-    var header_mapping = options.header_mapping || {};
-    var pretty = options.pretty;
-    if (pretty === undefined) {
-        pretty = true;
-    }
-    var isSingleRow = false;
+
+    const idAttribute = options.table_id ? ` id="${options.table_id}" ` : '';
+    const classAttribute = options.table_class ? ` class="${options.table_class}"` : '';
+    const header_mapping = options.header_mapping || {};
+    const pretty = (options.pretty == undefined) ? true : options.pretty;
+
+    let tableData = options.data || [];
+    let isSingleRow = false;
+    let header = options.header;
+
     if (!Array.isArray(tableData)) {
         isSingleRow = true;
         tableData = [tableData];
@@ -24,10 +21,9 @@ function tablify(options) {
 
     // If header exists in options use that else create it.
     if (!Array.isArray(header)) {
-        var headerObj = {};
+        let headerObj = {};
         tableData.forEach(function (json) {
-            var keys = Object.keys(json);
-            keys.forEach(function (key) {
+            Object.keys(json).forEach(function (key) {
                 headerObj[key] = true;
             });
         });
@@ -42,18 +38,21 @@ function tablify(options) {
     }
 
     // Generate table
-    var htmlTable = '';
-    var cellArray = [];
-    var cellRow = [];
+    let htmlTable = '';
+    let cellArray = [];
+    let cellRow = [];
+
     cellArray.push(cellRow);
+
     header.forEach(function (key) {
         cellRow.push('<th>' + (header_mapping[key] || key) + '</th>');
     });
+
     tableData.forEach(function (json) {
         cellRow = [];
         cellArray.push(cellRow);
         header.forEach(function (key) {
-            var value = json[key];
+            let value = json[key];
             if (value === undefined) {
                 value = '';
             } else if (typeof value !== 'string') {
@@ -73,33 +72,36 @@ function tablify(options) {
     }
 
     if (tableData.length) {
+
         htmlTable += `<table${idAttribute}${classAttribute}>`;
 
         htmlTable += '<thead>';
-            htmlTable += '<tr>';
-            cellArray[0].forEach(th => {
-                htmlTable += th;
-            });
-            cellArray.shift();
-            htmlTable += '</tr>';
+        htmlTable += '<tr>';
+        cellArray[0].forEach(th => {
+            htmlTable += th;
+        });
+        cellArray.shift();
+        htmlTable += '</tr>';
         htmlTable += '</thead>';
 
         htmlTable += '<tbody>';
-            cellArray.forEach(row => {
-                htmlTable += '<tr>';
-                row.forEach(cell => {
-                    htmlTable += cell;
-                });
-                htmlTable += '</tr>';
+        cellArray.forEach(row => {
+            htmlTable += '<tr>';
+            row.forEach(cell => {
+                htmlTable += cell;
             });
+            htmlTable += '</tr>';
+        });
         htmlTable += '</tbody>';
 
         htmlTable += '</table>';
+
     }
+
     return htmlTable;
 }
 
-var html_tablify = {
+const html_tablify = {
     tablify: tablify
 };
 
