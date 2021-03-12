@@ -1,6 +1,8 @@
 /* jslint node: true */
 'use strict';
 
+const xml2js = require('xml2js');
+
 function tablify(options) {
 
     options = options || {};
@@ -9,6 +11,7 @@ function tablify(options) {
     const classAttribute = options.table_class ? ` class="${options.table_class}"` : '';
     const header_mapping = options.header_mapping || {};
     const pretty = (options.pretty == undefined) ? true : options.pretty;
+    const tabCharacter = (options.tabCharacter) ? options.tabCharacter : '    ';
 
     let tableData = options.data || [];
     let isSingleRow = false;
@@ -96,6 +99,34 @@ function tablify(options) {
 
         htmlTable += '</table>';
 
+    }
+
+    if (pretty) {
+
+        const parser = new xml2js.Parser({ async: false, trim: true });
+
+        parser.parseString(htmlTable, (err, xml) => {
+
+            if (err) throw err;
+            let table = xml;
+            let builder = new xml2js.Builder({ xmldec : { encoding: 'UTF-8' } });
+
+            let builtXMLString = builder.buildObject(table);
+            builtXMLString = builtXMLString.replace(/\s*<\?xml version="1\.0" encoding="UTF-8"\?>\n/, '');
+
+            // Standardise indentation throughout the file
+            builtXMLString = builtXMLString.replace(/\n([ \t]+)/g, (match, p1) => {
+                let newTabs = "\n";
+                for (let n = p1.length/2; n > 0; n--) {
+                    newTabs += tabCharacter;
+                }
+                return newTabs;
+            });
+            builtXMLString += "\n";
+
+            htmlTable = builtXMLString;
+
+        });
     }
 
     return htmlTable;
