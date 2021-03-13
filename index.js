@@ -3,7 +3,7 @@
 
 const xml2js = require('xml2js');
 
-function tablify(options) {
+function tablify (options) {
 
 	options = options || {};
 
@@ -78,14 +78,16 @@ function tablify(options) {
 
 		htmlTable += `<table${idAttribute}${classAttribute}>`;
 
-		htmlTable += '<thead>';
-		htmlTable += '<tr>';
-		cellArray[0].forEach(th => {
-			htmlTable += th;
-		});
-		cellArray.shift();
-		htmlTable += '</tr>';
-		htmlTable += '</thead>';
+		if (options.useThead !== false) {
+			htmlTable += '<thead>';
+			htmlTable += '<tr>';
+			cellArray[0].forEach(th => {
+				htmlTable += th;
+			});
+			cellArray.shift();
+			htmlTable += '</tr>';
+			htmlTable += '</thead>';
+		}
 
 		htmlTable += '<tbody>';
 		cellArray.forEach(row => {
